@@ -1,12 +1,13 @@
-from sklearn import svm
 import utils
 import random
 import numpy as np
+from xgboost import XGBClassifier
 from scipy.sparse import lil_matrix
 from sklearn.feature_extraction.text import TfidfTransformer
 import time
 
-# Performs classification using SVM.
+# Performs classification using XGBoost.
+
 
 FREQ_DIST_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterData1600000-processed-freqdist.pkl'
 BI_FREQ_DIST_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterData1600000-processed-freqdist-bi.pkl'
@@ -120,7 +121,7 @@ if __name__ == '__main__':
         train_tweets = tweets
     del tweets
     print('Extracting features & training batches')
-    clf = svm.LinearSVC(C=0.1)
+    clf = XGBClassifier(max_depth=25, silent=False, n_estimators=400)
     batch_size = len(train_tweets)
     i = 1
     n_train_batches = int(np.ceil(len(train_tweets) / float(batch_size)))
@@ -162,9 +163,8 @@ if __name__ == '__main__':
             i += 1
         predictions = [(str(j), int(predictions[j]))
                        for j in range(len(test_tweets))]
-        utils.save_results_to_csv(predictions, 'svm.csv')
-        print('\nSaved to svm.csv')
-
+        utils.save_results_to_csv(predictions, 'xgboost.csv')
+        print('\nSaved to xgboost.csv')
     end = time.time()
     duration = end - start
     print("\nThe algorithm spent %d seconds" % (duration))
