@@ -7,14 +7,14 @@ from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 import utils
 from keras.preprocessing.sequence import pad_sequences
-
+import time
 # Performs classification using CNN.
 
-FREQ_DIST_FILE = '../train-processed-freqdist.pkl'
-BI_FREQ_DIST_FILE = '../train-processed-freqdist-bi.pkl'
-TRAIN_PROCESSED_FILE = '../train-processed.csv'
-TEST_PROCESSED_FILE = '../test-processed.csv'
-GLOVE_FILE = './dataset/glove-seeds.txt'
+FREQ_DIST_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterTrainData-processed-freqdist.pkl'
+BI_FREQ_DIST_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterTrainData-processed-freqdist-bi.pkl'
+TRAIN_PROCESSED_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterTrainData-processed.csv'
+TEST_PROCESSED_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/renameTwitterTestData-processed.csv'
+GLOVE_FILE = '/Users/qinqiang/Documents/workspace/Python/data/twitterSentimentData/glove.twitter.27B/glove.twitter.27B.200d.txt'
 dim = 200
 
 
@@ -82,6 +82,7 @@ def process_tweets(csv_file, test_file=True):
 
 
 if __name__ == '__main__':
+    start = time.time()
     train = len(sys.argv) == 1
     np.random.seed(1337)
     vocab_size = 90000
@@ -130,3 +131,6 @@ if __name__ == '__main__':
         predictions = model.predict(test_tweets, batch_size=128, verbose=1)
         results = zip(map(str, range(len(test_tweets))), np.round(predictions[:, 0]).astype(int))
         utils.save_results_to_csv(results, 'cnn.csv')
+    end = time.time()
+    duration = end - start
+    print("\nThe algorithm spent %d seconds" % (duration))
